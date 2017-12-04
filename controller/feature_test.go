@@ -1,16 +1,13 @@
 package controller
 
 import (
-
-	"testing"
 	unleashstrategy "github.com/Unleash/unleash-client-go/strategy"
 	"github.com/fabric8-services/fabric8-toggles-service/app/test"
 	"github.com/fabric8-services/fabric8-toggles-service/featuretoggles"
 	"github.com/goadesign/goa"
-	//"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
+	"testing"
 )
-
 
 func TestShowFeatures(t *testing.T) {
 	// given
@@ -25,10 +22,10 @@ func TestShowFeatures(t *testing.T) {
 		},
 	}
 
-	//t.Run("OK with jwt token without groupID claim", func(t *testing.T) {
-	//	// when/then
-	//	test.ListFeaturesUnauthorized(t, createInvalidContext(), svc, &ctrl)
-	//})
+	t.Run("OK with jwt token without groupID claim", func(t *testing.T) {
+		// when/then
+		test.ShowFeatureUnauthorized(t, createInvalidContext(), svc, &ctrl, "Planner")
+	})
 	t.Run("OK with jwt token containing groupID", func(t *testing.T) {
 		// when
 		feature := test.ShowFeatureOK(t, createValidContext(), svc, &ctrl, "Planner")
@@ -36,6 +33,3 @@ func TestShowFeatures(t *testing.T) {
 		require.NotNil(t, feature)
 	})
 }
-
-
-

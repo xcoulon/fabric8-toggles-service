@@ -33,18 +33,21 @@ func (c *FeatureController) Show(ctx *app.ShowFeatureContext) error {
 		log.Error(ctx.Context, map[string]interface{}{}, "Unable to retrieve token")
 		return errorhandler.JSONErrorResponse(ctx, errors.NewUnauthorizedError("Missing JWT token"))
 	}
+	featureID := ctx.ID
+	var enabledFeature *app.Feature
 	if groupID, ok := jwtToken.Claims.(jwtgo.MapClaims)["company"].(string); ok {
-		log.Info(ctx, nil, "Is feature id: %s enabled? ", ctx.ID)
-		enabledFeature := c.enabledFeature(ctx, ctx.ID, groupID)
-		if enabledFeature != nil {
-			log.Info(ctx, nil, "feature id foundenabled: %s enabled? ", enabledFeature.ID)
+		log.Info(ctx, nil, "Is feature id: %s enabled? ", featureID)
+		enabled := c.client.IsFeatureEnabled(featureID, groupID)
+		if enabled {
+			log.Info(ctx, nil, "feature id found enabled: %s enabled? ", ctx.ID)
+			enabledFeature = c.convert(featureID, groupID)
 		}
 		return ctx.OK(enabledFeature)
 	}
 	return errorhandler.JSONErrorResponse(ctx, errors.NewUnauthorizedError("Incomplete JWT token"))
 }
 
-func (c *FeatureController) enabledFeature(ctx *app.ShowFeatureContext, featureID string, groupID string) *app.Feature {
+func (c *FeatureController) convert(featureID string, groupID string) *app.Feature {
 	descriptionFeature := "Description of the feature"
 	enabledFeature := true
 	nameFeature := featureID
@@ -56,10 +59,6 @@ func (c *FeatureController) enabledFeature(ctx *app.ShowFeatureContext, featureI
 			Enabled:     &enabledFeature,
 			GroupID:     &groupID,
 		},
-	}
-	enabled := c.client.IsFeatureEnabled(featureID, groupID)
-	if !enabled {
-		return nil
 	}
 	return &feature
 }
