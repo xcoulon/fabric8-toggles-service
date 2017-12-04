@@ -38,18 +38,14 @@ func (c *FeatureController) Show(ctx *app.ShowFeatureContext) error {
 	if groupID, ok := jwtToken.Claims.(jwtgo.MapClaims)["company"].(string); ok {
 		log.Info(ctx, nil, "Is feature id: %s enabled? ", featureID)
 		enabled := c.client.IsFeatureEnabled(featureID, groupID)
-		if enabled {
-			log.Info(ctx, nil, "feature id found enabled: %s enabled? ", ctx.ID)
-			enabledFeature = c.convert(featureID, groupID)
-		}
+		enabledFeature = c.convert(featureID, groupID, enabled)
 		return ctx.OK(enabledFeature)
 	}
 	return errorhandler.JSONErrorResponse(ctx, errors.NewUnauthorizedError("Incomplete JWT token"))
 }
 
-func (c *FeatureController) convert(featureID string, groupID string) *app.Feature {
+func (c *FeatureController) convert(featureID string, groupID string, enabledFeature bool) *app.Feature {
 	descriptionFeature := "Description of the feature"
-	enabledFeature := true
 	nameFeature := featureID
 	feature := app.Feature{
 		ID: nameFeature,

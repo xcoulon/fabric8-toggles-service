@@ -26,7 +26,13 @@ func TestShowFeatures(t *testing.T) {
 		// when/then
 		test.ShowFeatureUnauthorized(t, createInvalidContext(), svc, &ctrl, "Planner")
 	})
-	t.Run("OK with jwt token containing groupID", func(t *testing.T) {
+	t.Run("OK with jwt token containing groupID for a enabled feature", func(t *testing.T) {
+		// when
+		feature := test.ShowFeatureOK(t, createValidContext(), svc, &ctrl, "ENABLED")
+		// then
+		require.NotNil(t, feature)
+	})
+	t.Run("OK with jwt token containing groupID for a non-enabled feature", func(t *testing.T) {
 		// when
 		feature := test.ShowFeatureOK(t, createValidContext(), svc, &ctrl, "Planner")
 		// then

@@ -53,7 +53,10 @@ func (m *MockUnleashClient) GetEnabledFeatures(ctx *unleashcontext.Context) []st
 
 // IsFeatureEnabled mimicks the behaviour of the real client, always returns true
 func (c *MockUnleashClient) IsEnabled(feature string, options ...unleash.FeatureOption) (enabled bool) {
-	return true
+	if feature == "ENABLED" {
+		return true
+	}
+	return false
 }
 
 func (m *MockUnleashClient) Close() error {

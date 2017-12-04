@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	defaultLogLevel   = "info"
-	defaultTogglesURL = "http://f8toggles/api"
+	defaultLogLevel      = "info"
+	defaultTogglesURL    = "http://f8toggles/api"
 	defaultKeycloakURL   = "https://auth.openshift.io"
 	defaultKeycloakRealm = "fabric8"
 	// DevModeRsaPrivateKey for signing JWT Tokens in Dev Mode
