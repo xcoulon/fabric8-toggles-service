@@ -2,6 +2,7 @@ package featuretoggles
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Unleash/unleash-client-go"
 	unleashcontext "github.com/Unleash/unleash-client-go/context"
@@ -33,6 +34,9 @@ func NewClient(config ToggleServiceConfiguration) (*Client, error) {
 		unleash.WithAppName("fabric8-ui"),
 		unleash.WithUrl(config.GetTogglesURL()),
 		unleash.WithStrategies(&EnableByGroupIDStrategy{}),
+		// unleash.WithRefreshInterval(1*time.Second),
+		unleash.WithMetricsInterval(5*time.Second),
+		unleash.WithListener(MetricsListener{}),
 	)
 	if err != nil {
 		return nil, err
